@@ -5,7 +5,7 @@
 
 Тёмными оттенками помечены закрашенные моделью точки.
 
-![Иллюстрация](https://github.com/occ4sion/KNN/blob/master/preview/preview.png)
+<img src="https://github.com/occ4sion/KNN/blob/master/preview/preview.png" width="600" alt="Иллюстрация"/>
 
 Реализация непараметрического метода Парзеновского окна с фиксированной шириной различными типами ядер над метрикой минковского для пользовательских объектов в двумерном евклидовом пространстве.
 
@@ -15,10 +15,13 @@
 3. Запустите `KNN.exe`.
 4. Когда закончите рисовать, `обучите` модель.
 5. Поставьте точки для раскрашивания и нажмите `Предсказать`.
-![Иллюстрация](https://github.com/occ4sion/KNN/blob/master/preview/KNN.gif)
+
+|version 1.0|version 2.2|
+|-----------|-----------|
+| <img src="https://github.com/occ4sion/KNN/blob/master/preview/KNN1.gif" width="400" alt="v1.0"/> | <img src="https://github.com/occ4sion/KNN/blob/master/preview/KNN2.gif" width="400" alt="v2.2"/> |
 
 #### TODO:
 [] Multiclass
 [] More kernels
 [] Add parameters
-[] Fill canvas
+[x] Fill canvas

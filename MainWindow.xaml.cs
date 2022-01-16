@@ -18,11 +18,12 @@ namespace KNN
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public struct point
+    public struct point // Класс для точек данных
     {
-        public double[] coords;
-        public int cls;
-        public point(Point p, int cls)
+        public double[] coords; // координаты
+        public int cls; // метка класса
+        public point(Point p, int cls) // конструктор для создания объекта из
+        // встроенного типа Point
         {
             this.coords = new double[2] { p.X, p.Y };
             this.cls = cls;
@@ -35,17 +36,18 @@ namespace KNN
     }
     public class Model
     {
-        List<point> data;
-        double h;
-        public bool IsFitted()
+        List<point> data; // обучающая выборка
+        double h; // ширина окна
+        public bool IsFitted() // если модель обучена
+        // то обучающая выборка не пуста
         {
             return data is not null;
         }
-        private double kernel(double r)
+        private double kernel(double r) // функция окна
         {
             return Math.Exp(-1 * h * r);
         }
-        public static double distance(point point1, point point2)
+        public static double distance(point point1, point point2) // расстояние Минковского
         {
             double r = 0;
             for (int i = 0; i < point1.coords.Length; i++)
@@ -61,26 +63,27 @@ namespace KNN
         }
         public int[] predict(List<point> points, int[] classes)
         {
-            int[] y = new int[points.Count];
-            Dictionary<int, double> clss = new Dictionary<int, double>();
+            int[] y = new int[points.Count]; // метка классов для каждого тестового объекта
+            Dictionary<int, double> clss = new Dictionary<int, double>(); // словарь метка класса:сумма
+            // костыль для реализации argmax
             int i = 0;
-            foreach (point p in points)
+            foreach (point p in points) // для каждоого тестового образца
             {
-                foreach (int cls in classes)
+                foreach (int cls in classes) // для каждой метки класса
                 {
-                    clss[cls] = 0;
-                    foreach (point P in data)
+                    clss[cls] = 0; // зануляем сумму для метки
+                    foreach (point P in data) // суммируем по всем обучающим точкам класса
                     {
                         clss[cls] += Convert.ToInt32(P.cls == cls) * kernel(distance(P, p)/h);
                     }
                 }
                 int res = 1;
-                for (int j = 0; j < classes.Length-1; j++)
+                for (int j = 0; j < classes.Length-1; j++) // argmax
                 {
                     if (clss[classes[j]] > clss[classes[j + 1]])
                         res = classes[j];
                 }
-                y[i] = res;
+                y[i] = res; // присваиваем метку для i-го образца
                 i++;
             }
             return y;
@@ -88,10 +91,10 @@ namespace KNN
     }
     public partial class MainWindow : Window
     {
-        bool enabled;
-        List<point> data;
-        List<point> test;
-        List<Rectangle> rect;
+        bool enabled; // нажата ли кнопка для движения мыши
+        List<point> data; // обучающая выборка
+        List<point> test; // тестовая выборка
+        List<Rectangle> rect; // точки тестовых данных 
         Model knn;
         public MainWindow()
         {
@@ -141,10 +144,11 @@ namespace KNN
         private void Down(object sender, MouseButtonEventArgs e)
         {
             //enabled = true;
-            Rectangle rectangle = new Rectangle();
+            Rectangle rectangle = new Rectangle(); // создаем точку
             rectangle.Width = 10;
             rectangle.Height = 10;
             Point p = e.GetPosition(this);
+            // Проверки нажатия кнопки, покраска и добавление в выборку
             if (e.RightButton == MouseButtonState.Pressed)
             {
                 rectangle.Fill = Brushes.RoyalBlue;
@@ -162,14 +166,14 @@ namespace KNN
                 test.Add(new point(p, 0));
                 rect.Add(rectangle);
             }
-                ((Canvas)sender).Children.Add(rectangle);
+            ((Canvas)sender).Children.Add(rectangle); // добавляем точку на холст
             Canvas.SetLeft(rectangle, p.X);
             Canvas.SetTop(rectangle, p.Y);
         }
 
         private void Fit(object sender, RoutedEventArgs e)
         {
-            if (data.Count == 0)
+            if (data.Count == 0) // если обучающих данных нет
                 return;
             knn.fit(data, .1);
             
@@ -177,12 +181,12 @@ namespace KNN
 
         private void Predict(object sender, RoutedEventArgs e)
         {
-            if (!knn.IsFitted())
+            if (!knn.IsFitted()) // если модель не обучена
                 return;
-            int[] cls = knn.predict(test, new int[] { -1, 1 });
-            for (int i = 0; i < cls.Length; i++)
+            int[] cls = knn.predict(test, new int[] { -1, 1 }); // предсказания для тестовых данных
+            for (int i = 0; i < cls.Length; i++) // для каждой тестовой точки
             {
-                rect[i].Fill = cls[i] == 1 ? Brushes.DarkBlue : Brushes.DarkRed;
+                rect[i].Fill = cls[i] == 1 ? Brushes.DarkBlue : Brushes.DarkRed; // покраска соответствующей тояки в цвет её метки класса
             }
         }
 

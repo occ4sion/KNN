@@ -18,6 +18,7 @@
 ![Иллюстрация](https://github.com/occ4sion/KNN/blob/master/preview/KNN.gif)
 
 #### TODO:
-* Multiclass
-* More kernels
-* Add parameters
+[] Multiclass
+[] More kernels
+[] Add parameters
+[] Fill canvas

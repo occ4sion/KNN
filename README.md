@@ -21,7 +21,8 @@
 | <img src="https://github.com/occ4sion/KNN/blob/master/preview/KNN1.gif" width="400" alt="v1.0"/> | <img src="https://github.com/occ4sion/KNN/blob/master/preview/KNN2.gif" width="400" alt="v2.2"/> |
 
 #### TODO:
-[] Multiclass
-[] More kernels
-[] Add parameters
-[x] Fill canvas
+
+- [ ] Multiclass
+- [ ] More kernels
+- [ ] Add parameters
+- [x] Fill canvas

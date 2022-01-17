@@ -25,7 +25,7 @@ namespace KNN
             }
             return r;
         }
-        public virtual void fit(List<point> data, double[]? args = null)
+        public virtual void fit(List<point> data)
         {
             this.data = data;
         }
@@ -60,15 +60,15 @@ namespace KNN
     class ParzenWindow : Model
     {
         double h; // ширина окна
-        protected override double kernel(double r)
+
+        public ParzenWindow(double h)
         {
-            return Math.Exp(-1 * h * r/h);
+            this.h = h;
         }
 
-        public override void fit(List<point> data, double[]? args = null)
+        protected override double kernel(double r)
         {
-            this.h = (double)args[0];
-            base.fit(data);
+            return Math.Exp(-1 * r/h);
         }
     }
 }

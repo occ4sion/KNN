@@ -20,9 +20,9 @@ namespace KNN
         List<point> data; // обучающая выборка
         List<point> test, fill_coords; // тестовая выборка
         List<Rectangle> rect, fill; // точки тестовых данных 
-        Model window;
+        Model model;
         Rectangle rectangle;
-        double width = .1;
+        double param;
         public MainWindow()
         {
             data = new List<point>();
@@ -30,8 +30,13 @@ namespace KNN
             fill_coords = new List<point>();
             rect = new List<Rectangle>();
             fill = new List<Rectangle>();
-            window = new ParzenWindow();
+            param = .1;
+            model = new ParzenWindow(.1);
             InitializeComponent();
+            combo.Items.Add("Экспоненциальное ядро");
+            combo.Items.Add("K-ближайших соседей");
+            combo.Items.Add("Ближайший сосед");
+            combo.SelectedItem = "Экспоненциальное ядро";
             // заполняем фон точками на случай, если понадобится рисовать границы
             for (int i = 0; i < 640 - 20; i+=9)
             {
@@ -95,27 +100,48 @@ namespace KNN
         {
             if (data.Count == 0) // если обучающих данных нет
                 return;
-            window.fit(data, new double[]{ width }); ;
+            double.TryParse(args.Text, out param);
+            switch (combo.SelectedItem)
+            {
+                case "Экспоненциальное ядро":
+                    model = new ParzenWindow(param);
+                    label.Content = "Ширина окна";
+                    break;
+                case "K-ближайших соседей":
+                    label.Content = "Количество соседей";
+                    break;
+                case "Ближайший сосед":
+                    label.Content = "";
+                    break;
+                default:
+                    break;
+            }
+            model.fit(data);
             
         }
 
         private void Predict(object sender, RoutedEventArgs e)
         {
-            if (!window.IsFitted()) // если модель не обучена
+            if (!model.IsFitted()) // если модель не обучена
                 return;
             int[] cls;
-            cls = window.predict(test, new int[] { -1, 1 }); // предсказания для тестовых данных
+            cls = model.predict(test, new int[] { -1, 1 }); // предсказания для тестовых данных
             for (int i = 0; i < cls.Length; i++) // для каждой тестовой точки
             {
                 rect[i].Fill = cls[i] == 1 ? Brushes.DarkBlue : Brushes.DarkRed; // покраска соответствующей точки в цвет её метки класса
             }
             if (!IsChecked) // если границы не нужно отображать
                 return;
-            cls = window.predict(fill_coords, new int[] { -1, 1 }); // предсказания для фоновых точек
+            cls = model.predict(fill_coords, new int[] { -1, 1 }); // предсказания для фоновых точек
             for (int i = 0; i < cls.Length; i++) // для каждой точки на фоне
             {
                 fill[i].Fill = cls[i] == 1 ? Brushes.SkyBlue : Brushes.OrangeRed; // покраска соответствующей точки в цвет её метки класса
             }
+        }
+
+        private void Select(object sender, SelectionChangedEventArgs e)
+        {
+            
         }
 
         private void Clear(object sender, RoutedEventArgs e)

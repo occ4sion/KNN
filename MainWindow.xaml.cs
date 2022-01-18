@@ -16,13 +16,13 @@ namespace KNN
 {
     public partial class MainWindow : Window
     {
-        bool IsEnable, IsChecked; // нажата ли кнопка для движения мыши
-        List<point> data; // обучающая выборка
-        List<point> test, fill_coords; // тестовая выборка
-        List<Rectangle> rect, fill; // точки тестовых данных 
-        Model model;
-        Rectangle rectangle;
-        double param;
+        private bool IsEnable; // нажата ли кнопка для движения мыши
+        private List<point> data; // обучающая выборка
+        private List<point> test, fill_coords; // тестовая выборка
+        private List<Rectangle> rect, fill; // точки тестовых данных 
+        private Model model;
+        private Rectangle rectangle;
+        private double param;
         public MainWindow()
         {
             data = new List<point>();
@@ -58,10 +58,12 @@ namespace KNN
         {
             if (!IsEnable)
                 return;
+            Point p = e.GetPosition(this);
+            if (p.X > 620)
+                return;
             rectangle = new Rectangle(); // создаем точку
             rectangle.Width = 10;
             rectangle.Height = 10;
-            Point p = e.GetPosition(this);
             // Проверки нажатия кнопки, покраска и добавление в выборку
             if (e.RightButton == MouseButtonState.Pressed)
             {
@@ -78,7 +80,7 @@ namespace KNN
             {
                 rectangle.Fill = Brushes.Black;
                 test.Add(new point(p, 0));
-                rect.Add(rectangle);
+                rect.Add(rectangle); // добавляем квадрат к точкам для расскрашивания
             }
             canvas.Children.Add(rectangle); // добавляем точку на холст
             Canvas.SetLeft(rectangle, p.X);
@@ -116,8 +118,7 @@ namespace KNN
                 default:
                     break;
             }
-            model.fit(data);
-            
+            model.fit(data); 
         }
 
         private void Predict(object sender, RoutedEventArgs e)
@@ -130,18 +131,13 @@ namespace KNN
             {
                 rect[i].Fill = cls[i] == 1 ? Brushes.DarkBlue : Brushes.DarkRed; // покраска соответствующей точки в цвет её метки класса
             }
-            if (!IsChecked) // если границы не нужно отображать
+            if (check.IsChecked == false) // если границы не нужно отображать
                 return;
             cls = model.predict(fill_coords, new int[] { -1, 1 }); // предсказания для фоновых точек
             for (int i = 0; i < cls.Length; i++) // для каждой точки на фоне
             {
                 fill[i].Fill = cls[i] == 1 ? Brushes.SkyBlue : Brushes.OrangeRed; // покраска соответствующей точки в цвет её метки класса
             }
-        }
-
-        private void Select(object sender, SelectionChangedEventArgs e)
-        {
-            
         }
 
         private void Clear(object sender, RoutedEventArgs e)
@@ -151,19 +147,10 @@ namespace KNN
             {
                 r.Fill = Brushes.White; // закрашиваем фон
             }
+            model = new ParzenWindow(.1);
             data.Clear();
             test.Clear();
             rect.Clear();
-        }
-
-        private void Check(object sender, RoutedEventArgs e)
-        {
-            IsChecked = true; // нужно отображать границы
-        }
-
-        private void Uncheck(object sender, RoutedEventArgs e)
-        {
-            IsChecked = false; // границы не нужно отображать
         }
     }
 }

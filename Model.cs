@@ -5,7 +5,7 @@ namespace KNN
 {
     class Model
     {
-        List<point>? data; // обучающая выборка
+        protected List<point>? data; // обучающая выборка
         public bool IsFitted() // если модель обучена
         // то обучающая выборка не пуста
         {
@@ -27,7 +27,7 @@ namespace KNN
         }
         public virtual void fit(List<point> data)
         {
-            this.data = data;
+            this.data = new List<point>(data); // для создания глубокой копии
         }
         public int[] predict(List<point> points, int[] classes)
         {
@@ -42,7 +42,9 @@ namespace KNN
                     clss[cls] = 0; // зануляем сумму для метки
                     foreach (point P in data) // суммируем по всем обучающим точкам класса
                     {
-                        clss[cls] += Convert.ToInt32(P.cls == cls) * kernel(distance(P, p));
+                        // ускорение в 2 раза
+                        if (P.cls == cls) // если класс точки обучающего примера совпадает с конкретным классом
+                            clss[cls] += kernel(distance(P, p)); // вместо умножения на (y_i == y) использвуем условие выше
                     }
                 }
                 int res = 1;

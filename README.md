@@ -24,5 +24,5 @@
 
 - [ ] Multiclass
 - [ ] More kernels
-- [ ] Add parameters
+- [x] Add parameters
 - [x] Fill canvas

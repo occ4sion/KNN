@@ -147,7 +147,6 @@ namespace KNN
             {
                 r.Fill = Brushes.White; // закрашиваем фон
             }
-            model = new ParzenWindow(.1);
             data.Clear();
             test.Clear();
             rect.Clear();
